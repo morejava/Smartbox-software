@@ -71,13 +71,13 @@ A total of 4 relays are needed to control the two devices on/off and 3 fan speed
 The following tables show the relay settings for controlling the 2 devices.  
 
 R1|Fan coil
---|--------
+---|--------
 1 |off
 2 |on (see below table for speed  control)
   
   
 R2|Boiler
---|--------
+---|--------
 1 |off
 2 |on 
   
@@ -85,7 +85,7 @@ R2|Boiler
 The following table shows the relay settings for controlling the 3 fan speeds.  
 
 R3|R4|FanSpeed
---|--|-------------
+---|---|-------------
 1|don't care|L (1)
 2|1         |M (2)
 2|2         |H (3)
