@@ -1,0 +1,5 @@
+# Telegea Thermostat GUI launcher
+check process thermostat-gui with pidfile /var/run/thermostat-gui.pid
+    start program = "/etc/init.d/thermostat_gui start" with timeout 60 seconds
+    stop program  = "/etc/init.d/thermostat_gui stop"
+ 

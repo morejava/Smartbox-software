@@ -1,0 +1,5 @@
+# Telegea Pulse counter daemon
+check process pulsecountd with pidfile /var/run/pulsecountd.pid
+    start program = "/etc/init.d/pulsecountd start" with timeout 60 seconds
+    stop program  = "/etc/init.d/pulsecountd stop"
+ 

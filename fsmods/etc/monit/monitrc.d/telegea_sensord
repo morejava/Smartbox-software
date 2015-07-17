@@ -1,0 +1,4 @@
+# TeleGea Sensor daemon
+check process sensord with pidfile /var/run/sensord.pid
+    start program = "/etc/init.d/sensord start" with timeout 60 seconds
+    stop program  = "/etc/init.d/sensord stop"

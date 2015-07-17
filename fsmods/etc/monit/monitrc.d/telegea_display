@@ -1,0 +1,5 @@
+# Telegea Webbrowser on local display connected to HDMI
+check process webbrowser with pidfile /var/run/webbrowser.pid
+    start program = "/etc/init.d/webbrowser start" with timeout 60 seconds
+    stop program  = "/etc/init.d/webbrowser stop"
+ 

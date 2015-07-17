@@ -1,0 +1,42 @@
+Selected	Slave address	Address	Name	Divisor	Register type	Signed	Size	Function	Register Selector	Register Package	Default value	Value range	Value description	Step	Value type	Icon
+NO	1	1	Outdoor temp	10	R	S	16	Parametri generali	B	DEKTEMP1					°C	Termometro caldo.png
+NO	1	2	Room temp	10	R	S	16	Parametri generali	B	DEKTEMP1					°C	Termometro caldo.png
+NO	1	3	Return temp	10	R	S	16	Clima	B	DEKTEMP1					°C	Termometro caldo.png
+NO	1	4	Inflow temp	10	R	S	16	Clima	B	DEKTEMP1					°C	Termometro caldo.png
+NO	1	5	HWinflow temp	10	R	S	16	ACS	B	DEKTEMP2					°C	HotWater logo.png
+NO	1	6	HWreturn temp	10	R	S	16	ACS	B	DEKTEMP2					°C	HotWater logo.png
+NO	1	7	Brine in temp	10	R	S	16	Parametri generali	B	DEKTEMP3					°C	Termometro caldo.png
+NO	1	8	Brine out Temp	10	R	S	16	Parametri generali	B	DEKTEMP3					°C	Termometro caldo.png
+NO	2	1	Flow Clima	1	R	U	32	Contatori	B	DEKFLOW1					l	
+NO	2	2	Flow ACS	1	R	U	32	Contatori	B	DEKFLOW1					l	HotWater logo.png
+NO	2	3	Flow ACS	1	R	U	32	Contatori	B	DEKFLOW2					l	HotWater logo.png
+NO	2	9	Energy	1	R	U	32	Contatori	B	DEKEN1					kWh	
+NO	2	10	Energy ACS	1	R	U	32	Contatori	B	DEKEN1					kWh	HotWater logo.png
+NO	1	9	Extra temp 1	10	R	S	16	Extra	B	DEKTEMP4					°C	Termometro caldo.png
+NO	1	10	Extra temp 2	10	R	S	16	Extra	B	DEKTEMP4					°C	Termometro caldo.png
+NO	1	11	Humidity 1	10	R	U	16	Extra	B	DEKTEMP5					%	
+NO	1	12	Extra temp 3	10	R	S	16	Extra	B	DEKTEMP5					°C	Termometro caldo.png
+NO	1	13	Humidity 2	10	R	U	16	Extra	B	DEKTEMP6					%	
+NO	1	14	Extra temp 4	10	R	S	16	Extra	B	DEKTEMP6					°C	Termometro caldo.png
+NO	1	15	Humidity 3	10	R	U	16	Extra	B	DEKTEMP6					%	
+NO	1	16	Extra temp 5	10	R	S	16	Extra	B	DEKTEMP6					°C	Termometro caldo.png
+NO	1	17	Humidity 4	10	R	U	16	Extra	B	DEKTEMP6					%	
+NO	1	18	Extra temp 6	10	R	S	16	Extra	B	DEKTEMP6					°C	Termometro caldo.png
+NO	2	5	Flow Source	1	R	U	32	Contatori	B	DEKFLOW3					l	
+NO	2	7	Extra Flow 1	1	R	U	32	Contatori	B	DEKFLOW4					l	
+NO	2	11	Extra Energy 1	1	R	U	32	Contatori	B	DEKEN2					kWh	
+NO	2	13	Extra Energy 2	1	R	U	32	Contatori	B	DEKEN3					kWh	
+NO	3	1	Operating mode	1	R	U	8	Parametri generali	B	DEKCLIMA1		"0;1;2"	"Unknown;HotWater;Clima"			casa caldo.png
+NO	3	2	Brine pump Status	1	R	U	8	Parametri generali	B	DEKSTATUS1		"0;1;2"	"Unknown;On;Off"			circolatore2.png
+NO	3	3	Compressor Status	1	R	U	8	Parametri generali	B	DEKSTATUS2		"0;1;2"	"Unknown;On;Off"			compressore.png
+NO	3	4	Pump Status	1	R	U	8	Parametri generali	B	DEKSTATUS3		"0;1;2"	"Unknown;On;Off"			circolatorecaldo.png
+NO	3	5	Extra Status	1	R	U	8	Extra	B	DEKSTATUS4		"0;1;2"	"Unknown;On;Off"			
+NO	3	6	Defrost Status	1	R	U	8	Extra	B	DEKSTATUS4		"0;1;2"	"Unknown;On;Off"	
+NO	3	7	Heat Pump Alarm	1	R	U	8	Extra	B	DEKSTATUS4		"0;1;2"	"Unknown;On;Off"	
+NO	4	1	Clima mode switch	1	RW	U	8	Clima	B	DEKCLIMA2		"0;1;2"	"Auto;Winter;Summer"			casa caldo.png
+NO	4	2	Clima zone 1 switch	1	RW	U	8	Clima	B	DEKCLIMA3		"0;1;2"	"Auto;On;Off"			casa caldo.png
+NO	4	3	Clima zone 2 switch	1	RW	U	8	Clima	B	DEKCLIMA3		"0;1;2"	"Auto;On;Off"			casa caldo.png
+NO	4	4	Clima zone 3 switch	1	RW	U	8	Clima	B	DEKCLIMA4		"0;1;2"	"Auto;On;Off"			casa caldo.png
+NO	4	5	Clima zone 4 switch	1	RW	U	8	Clima	B	DEKCLIMA5		"0;1;2"	"Auto;On;Off"			casa caldo.png
+NO	4	6	Extra Control Switch 1	1	RW	U	8	Extra	B	DEKCTRL1		"0;1;2"	"Auto;On;Off"			
+NO	4	7	Extra Control Switch 2	1	RW	U	8	Extra	B	DEKCTRL2		"0;1;2"	"Auto;On;Off"			

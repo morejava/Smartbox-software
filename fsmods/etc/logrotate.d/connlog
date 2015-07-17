@@ -1,0 +1,9 @@
+/var/log/connection.log {
+	rotate 7
+	daily
+	missingok
+	notifempty
+	compress
+	nocreate
+}
+

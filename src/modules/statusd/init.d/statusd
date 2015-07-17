@@ -1,0 +1,114 @@
+#! /bin/bash
+### BEGIN INIT INFO
+# Provides:          	statusd
+# Required-Start:	$remote_fs $syslog
+# Required-Stop:	$remote_fs $syslog
+# Default-Start:	2 3 4 5
+# Default-Stop:		
+# Short-Description: Sensor daemon
+### END INIT INFO
+
+# load configuration parameters
+. /tmp/geofox.conf
+
+NAME=statusd
+PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin
+DAEMON=/usr/local/bin/$NAME
+PIDFILE=/var/run/$NAME.pid
+DESC="Status daemon"
+OPTS="$INPUT1_1_ID $INPUT1_2_ID $INPUT1_LOGIC \
+      $INPUT2_1_ID $INPUT2_2_ID $INPUT2_LOGIC \
+      $INPUT3_1_ID $INPUT3_2_ID $INPUT3_LOGIC \
+      $INPUT4_1_ID $INPUT4_2_ID $INPUT4_LOGIC \
+      $INPUT5_1_ID $INPUT5_2_ID $INPUT5_LOGIC \
+      $INPUT6_1_ID $INPUT6_2_ID $INPUT6_LOGIC \
+      $INPUT7_1_ID $INPUT7_2_ID $INPUT7_LOGIC \
+      $INPUT8_1_ID $INPUT8_2_ID $INPUT8_LOGIC"
+
+. /lib/init/vars.sh
+. /lib/lsb/init-functions
+
+function is_rpi()
+{
+  # Check if this is the RPi board
+  if [ $(cat /proc/cpuinfo | grep Hardware |  awk '{print $3}') == 'BCM2708' ]; then 
+    # Check if gpio tool is installed
+    if [ -n $(which gpio) ]; then  
+      return 1;
+    else
+      echo "The gpio tool cannot be found! Install it from http://wiringpi.com and try again."
+    fi
+  fi
+  return 0
+}
+
+function enable_pullups()
+{
+  # Check if we are running on RPi
+  is_rpi
+  if [ $? -eq 1 ]; then
+    # Enable pull-ups for used GPIO lines
+    [[ -n "$INPUT1_1_ID" && $INPUT1_1_ID -ne 0 ]] && gpio -g mode $INPUT1_1_ID up
+    [[ -n "$INPUT1_2_ID" && $INPUT1_2_ID -ne 0 ]] && gpio -g mode $INPUT1_2_ID up
+    [[ -n "$INPUT2_1_ID" && $INPUT2_1_ID -ne 0 ]] && gpio -g mode $INPUT2_1_ID up
+    [[ -n "$INPUT2_2_ID" && $INPUT2_2_ID -ne 0 ]] && gpio -g mode $INPUT2_2_ID up
+    [[ -n "$INPUT3_1_ID" && $INPUT3_1_ID -ne 0 ]] && gpio -g mode $INPUT3_1_ID up
+    [[ -n "$INPUT3_2_ID" && $INPUT3_2_ID -ne 0 ]] && gpio -g mode $INPUT3_2_ID up
+    [[ -n "$INPUT4_1_ID" && $INPUT4_1_ID -ne 0 ]] && gpio -g mode $INPUT4_1_ID up
+    [[ -n "$INPUT4_2_ID" && $INPUT4_2_ID -ne 0 ]] && gpio -g mode $INPUT4_2_ID up
+    [[ -n "$INPUT5_1_ID" && $INPUT5_1_ID -ne 0 ]] && gpio -g mode $INPUT5_1_ID up
+    [[ -n "$INPUT5_2_ID" && $INPUT5_2_ID -ne 0 ]] && gpio -g mode $INPUT5_2_ID up
+    [[ -n "$INPUT6_1_ID" && $INPUT6_1_ID -ne 0 ]] && gpio -g mode $INPUT6_1_ID up
+    [[ -n "$INPUT6_2_ID" && $INPUT6_2_ID -ne 0 ]] && gpio -g mode $INPUT6_2_ID up
+    [[ -n "$INPUT7_1_ID" && $INPUT7_1_ID -ne 0 ]] && gpio -g mode $INPUT7_1_ID up
+    [[ -n "$INPUT7_2_ID" && $INPUT7_2_ID -ne 0 ]] && gpio -g mode $INPUT7_2_ID up
+    [[ -n "$INPUT8_1_ID" && $INPUT8_1_ID -ne 0 ]] && gpio -g mode $INPUT8_1_ID up
+    [[ -n "$INPUT8_2_ID" && $INPUT8_2_ID -ne 0 ]] && gpio -g mode $INPUT8_2_ID up
+  fi
+}
+
+function disable_pullups()
+{
+  # Check if we are running on RPi
+  is_rpi
+  if [ $? -eq 1 ]; then
+    # Disable pull-ups for used GPIO lines
+    [[ -n "$INPUT1_1_ID" && $INPUT1_1_ID -ne 0 ]] && gpio -g mode $INPUT1_1_ID tri
+    [[ -n "$INPUT1_2_ID" && $INPUT1_2_ID -ne 0 ]] && gpio -g mode $INPUT1_2_ID tri
+    [[ -n "$INPUT2_1_ID" && $INPUT2_1_ID -ne 0 ]] && gpio -g mode $INPUT2_1_ID tri
+    [[ -n "$INPUT2_2_ID" && $INPUT2_2_ID -ne 0 ]] && gpio -g mode $INPUT2_2_ID tri
+    [[ -n "$INPUT3_1_ID" && $INPUT3_1_ID -ne 0 ]] && gpio -g mode $INPUT3_1_ID tri
+    [[ -n "$INPUT3_2_ID" && $INPUT3_2_ID -ne 0 ]] && gpio -g mode $INPUT3_2_ID tri
+    [[ -n "$INPUT4_1_ID" && $INPUT4_1_ID -ne 0 ]] && gpio -g mode $INPUT4_1_ID tri
+    [[ -n "$INPUT4_2_ID" && $INPUT4_2_ID -ne 0 ]] && gpio -g mode $INPUT4_2_ID tri
+    [[ -n "$INPUT5_1_ID" && $INPUT5_1_ID -ne 0 ]] && gpio -g mode $INPUT5_1_ID tri
+    [[ -n "$INPUT5_2_ID" && $INPUT5_2_ID -ne 0 ]] && gpio -g mode $INPUT5_2_ID tri
+    [[ -n "$INPUT6_1_ID" && $INPUT6_1_ID -ne 0 ]] && gpio -g mode $INPUT6_1_ID tri
+    [[ -n "$INPUT6_2_ID" && $INPUT6_2_ID -ne 0 ]] && gpio -g mode $INPUT6_2_ID tri
+    [[ -n "$INPUT7_1_ID" && $INPUT7_1_ID -ne 0 ]] && gpio -g mode $INPUT7_1_ID tri
+    [[ -n "$INPUT7_2_ID" && $INPUT7_2_ID -ne 0 ]] && gpio -g mode $INPUT7_2_ID tri
+    [[ -n "$INPUT8_1_ID" && $INPUT8_1_ID -ne 0 ]] && gpio -g mode $INPUT8_1_ID tri
+    [[ -n "$INPUT8_2_ID" && $INPUT8_2_ID -ne 0 ]] && gpio -g mode $INPUT8_2_ID tri
+  fi
+}
+
+case "$1" in
+    start)
+	echo "Start $DESC"
+        enable_pullups
+	start-stop-daemon --start --quiet --background --oknodo --make-pidfile --pidfile $PIDFILE --exec $DAEMON -- $OPTS
+        ;;
+    restart|reload|force-reload)
+        echo "Error: argument '$1' not supported" >&2
+        exit 3
+        ;;
+    stop)
+	echo "Stop $DESC"
+	start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE
+        disable_pullups
+	;;
+    *)
+        echo "Usage: $0 start|stop" >&2
+        exit 3
+        ;;
+esac

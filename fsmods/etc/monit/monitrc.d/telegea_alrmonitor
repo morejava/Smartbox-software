@@ -1,0 +1,5 @@
+# Telegea alarm monitor 
+check process alarm_monitor with pidfile /var/run/alarm_monitor.pid
+    start program = "/etc/init.d/alarm_monitor start" with timeout 60 seconds
+    stop program  = "/etc/init.d/alarm_monitor stop"
+ 

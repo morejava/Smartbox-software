@@ -1,0 +1,5 @@
+# Telegea Modbus RTU daemon
+check process mbrtud with pidfile /var/run/mbrtud.pid
+    start program = "/etc/init.d/mbrtud start" with timeout 60 seconds
+    stop program  = "/etc/init.d/mbrtud stop"
+ 

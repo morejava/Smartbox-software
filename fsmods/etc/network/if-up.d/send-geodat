@@ -1,0 +1,19 @@
+#! /bin/bash
+##################################################################################
+#
+# Author:        Ondrej Wisniewski
+#
+# Description:   Start script send-geodat.sh which sends the latest data files 
+#                to the remote server
+#
+# Usage:         This script is called automatically when a network interface 
+#                comes up by placing it in /etc/init.d/network/ifup.d/
+#
+# Last modified: 17/04/2015
+#
+##################################################################################
+
+export IFACE=$IFACE
+/usr/local/bin/send-geodat.sh &
+
+exit 0

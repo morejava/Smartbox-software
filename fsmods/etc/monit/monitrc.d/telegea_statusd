@@ -1,0 +1,5 @@
+# Telegea Status daemon
+check process statusd with pidfile /var/run/statusd.pid
+    start program = "/etc/init.d/statusd start" with timeout 60 seconds
+    stop program  = "/etc/init.d/statusd stop"
+ 

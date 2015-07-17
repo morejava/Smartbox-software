@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+#    10-sysinfo - create the sysinfo part of the MOTD
+#
+
+echo "Plant Id        : $(cat /etc/telegea.conf | grep PLANTID | sed 's/=/ /g' |awk '{print $2}')" 
+echo "$(cat /proc/cpuinfo | grep Serial)"
+echo "Hostname        : $(hostname)"
+echo "System          : $(uname -srm)"
+echo "Uptime          : $(uptime -p)"
+

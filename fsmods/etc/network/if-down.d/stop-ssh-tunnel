@@ -1,0 +1,24 @@
+#! /bin/sh
+##################################################################################
+#
+# Author:        Ondrej Wisniewski
+#
+# Description:   Terminates the ssh tunnel to the remote server
+#
+# Usage:         This script is placed in /etc/ppp/ip-down.d/ and therefore will be 
+#                called by pppd every time the ppp connection is dropped.
+#
+# Last modified: 10/10/2014
+#
+##################################################################################
+
+# This file is deprecated and replced by /usr/local/bin/ssh-tunnel.ssh
+# Exit immediately (or just delete the file)
+exit 0
+
+RUNFILE=/var/run/ssh-tunnel
+
+# delete runfile
+rm $RUNFILE
+
+exit 0

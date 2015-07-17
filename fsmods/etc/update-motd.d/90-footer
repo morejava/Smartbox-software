@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+#    90-footer - create the footer of the MOTD
+#
+
+echo
+echo "Have a nive day."
+echo
+

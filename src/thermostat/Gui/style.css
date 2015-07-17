@@ -1,0 +1,194 @@
+html,body {
+    height:97%;
+    width:97%;
+}
+
+.touchscreen {
+  /* disable selection of screen elements */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  /* hide scroll bars */
+  overflow: hidden;
+}
+
+body {
+    text-align:center;
+}
+
+#outer{
+    height:100%;
+    width:100%;
+    display:table;
+    vertical-align:middle;
+}
+#container {
+    text-align: center;
+    position:relative;
+    vertical-align:middle;
+    display:table-cell;
+    height: 230px;
+}
+#inner {
+    width: 310px;
+    height: 230px;
+    text-align: center;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.icon-thermostat {
+  vertical-align: text-bottom; 
+  width: 30px; 
+  height: 78px;
+}
+
+#tempc_i {
+  font-size: 90px;
+}
+
+#tempt_i {
+    font-size: 32px;
+}
+
+#flame_icon {
+  width: 20px; 
+  height: 32px;
+}
+
+.td_current_temp {
+  vertical-align: middle;
+  font-family: Arial,sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+  text-align: center;
+  color: white;
+  width: 190px;
+  height: 50px;
+}
+
+.td_target_temp {
+  vertical-align: middle;
+  font-family: Arial,sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+  text-align: center;
+  color: white;
+  width: 120px;
+  height: 50px;
+}
+
+.icon-arrow-up {
+  width: 48px; 
+  height: 48px;
+  margin: 4px 0;
+}
+
+.icon-arrow-down {
+  width: 48px;
+  height: 48px;
+  margin: 4px 0;
+}
+
+.td_weather_clock {
+  vertical-align: middle;
+  font-family: Arial,sans-serif;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+  color: rgb(150, 255, 255);
+  height: 50px;
+}
+
+@media screen and (min-width: 480px) {
+    body {
+        text-align:center;
+    }
+    
+    #outer{
+        height:100%;
+        width:100%;
+        display:table;
+        vertical-align:middle;
+    }
+    #container {
+        text-align: center;
+        position:relative;
+        vertical-align:middle;
+        display:table-cell;
+        height: 300px;
+    }
+    #inner {
+        width: 460px;
+        height: 300px;
+        text-align: center;
+        margin-left:auto;
+        margin-right:auto;
+    }
+
+    .icon-thermostat {
+      vertical-align: text-bottom; 
+      width: 50px;
+      height: 119px;
+    }
+
+    #tempc_i {
+      font-size: 126px;
+    }
+    
+    #tempt_i {
+        font-size: 46px;
+    }
+
+    #flame_icon {
+      width: 40px;
+      height: 62px;
+    }
+
+    .td_current_temp {
+      vertical-align: middle;
+      font-family: Arial,sans-serif;
+      font-weight: bold;
+      font-size: 40px;
+      text-align: center;
+      color: white;
+      width: 264px;
+      height: 210px;
+    }
+
+    .td_target_temp {
+      vertical-align: middle;
+      font-family: Arial,sans-serif;
+      font-weight: bold;
+      font-size: 30px;
+      text-align: center;
+      color: white;
+      width: 204px;
+      height: 210px;
+    }
+
+    .icon-arrow-up {
+      width: 48px;
+      height: 48px;
+      margin: 6px 0;
+    }
+
+    .icon-arrow-down {
+      width: 48px;
+      height: 48px;
+      margin: 12px 0;
+    }
+
+    .td_weather_clock {
+      vertical-align: middle;
+      font-family: Arial,sans-serif;
+      font-weight: bold;
+      font-size: 30px;
+      text-align: center;
+      color: rgb(150, 255, 255);
+      height: 80px;
+    }
+}

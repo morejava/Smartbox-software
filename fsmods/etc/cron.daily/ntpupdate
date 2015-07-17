@@ -1,0 +1,27 @@
+#! /bin/sh
+##################################################################################
+#
+# Author:        Ondrej Wisniewski
+#
+# Description:   Synchs the local time and date with an NTP time server form 
+#                pool.ntp.org
+#
+# Usage:         This script is placed in /etc/cron.daily and therefore will be 
+#                called by crond once a day.
+#
+# Last modified: 28/11/2011
+#
+##################################################################################
+
+# define time server to use
+TIMESERVER=it.pool.ntp.org
+
+LOGFILE=/var/log/syslog
+
+# test if executable is installed
+test -x /usr/sbin/ntpdate || exit 1
+
+# synch local clock to remote time server
+/usr/sbin/ntpdate $TIMESERVER >> $LOGFILE
+
+exit 0

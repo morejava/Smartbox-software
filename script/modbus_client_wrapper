@@ -1,0 +1,52 @@
+#! /bin/bash
+##################################################################################
+#
+# Author:        M. Fioretti, O.Wisniewski
+#
+# Description:   Performs one Modbus read or write access to a given register,
+#                calling the Modbus client program
+#
+# Usage:         This script is called remotely from the server script 
+#                modbus_remote_client
+# 
+#                modbus_client_wrapper <PLANT_ID> <DUMMY> <OP> <SLAVE> <ADDR> <VALUE>
+#
+# Version:       0.4
+#
+# Last modified: 13/07/2014
+#
+##################################################################################
+
+# load generic configuration parameters ($MODBUS_CLIENT)
+. /etc/geofox.conf
+
+# Read command line parameters
+OP=$3
+SLAVE=$4
+ADDR=$5
+VALUE=$6
+
+# The Modbus TCP server only handles the address range [0 - 8200],
+# therefore we need to adjust the register addresses which come in  
+# range [40000 - 48200]
+if [ $ADDR -gt 40000 ]; then
+   ADDR=$(($ADDR-40000))
+fi
+
+# Define remaining parameters 
+IP_ADDR=$MODBUS_DEVICE_IP
+TCP_PORTBASE=5000
+TCP_PORT=$(($TCP_PORTBASE+$SLAVE))
+
+# Wait for ongoing Modbus client operation to finish
+while [ -d /tmp/modbus_client_lock ]
+  do
+  sleep 1
+  done
+
+# Perform Modbus client operation
+mkdir /tmp/modbus_client_lock
+$MODBUS_CLIENT  $IP_ADDR $TCP_PORT $OP $SLAVE $ADDR $VALUE > /tmp/modbus_access.txt 
+rmdir /tmp/modbus_client_lock
+
+exit 0

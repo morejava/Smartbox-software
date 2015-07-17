@@ -1,0 +1,101 @@
+#! /bin/bash
+### BEGIN INIT INFO
+# Provides:          	pulsecountd
+# Required-Start:	$remote_fs $syslog
+# Required-Stop:	$remote_fs $syslog
+# Default-Start:	2 3 4 5
+# Default-Stop:		
+# Short-Description: Pulse counter daemon
+### END INIT INFO
+
+# load configuration parameters
+. /tmp/geofox.conf
+
+NAME=pulsecountd
+PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin
+DAEMON=/usr/local/bin/$NAME
+PIDFILE=/var/run/$NAME.pid
+DESC="Pulse counter daemon"
+OPTS="$COUNTER1_ID $COUNTER1_DIV $COUNTER1_SFILE 
+      $COUNTER2_ID $COUNTER2_DIV $COUNTER2_SFILE \
+      $COUNTER3_ID $COUNTER3_DIV $COUNTER3_SFILE \
+      $COUNTER4_ID $COUNTER4_DIV $COUNTER4_SFILE \
+      $COUNTER5_ID $COUNTER5_DIV $COUNTER5_SFILE \
+      $COUNTER6_ID $COUNTER6_DIV $COUNTER6_SFILE \
+      $COUNTER7_ID $COUNTER7_DIV $COUNTER7_SFILE \
+      $COUNTER8_ID $COUNTER8_DIV $COUNTER8_SFILE"
+
+. /lib/init/vars.sh
+. /lib/lsb/init-functions
+
+# Functions to enable GPIO pull-up resistors
+# This is only applicable to the RPi board.
+
+function is_rpi()
+{
+  # Check if this is the RPi board
+  if [ $(cat /proc/cpuinfo | grep Hardware |  awk '{print $3}') == 'BCM2708' ]; then 
+    # Check if gpio tool is installed
+    if [ -n $(which gpio) ]; then  
+      return 1;
+    else
+      echo "The gpio tool cannot be found! Install it from http://wiringpi.com and try again."
+    fi
+  fi
+  return 0
+}
+
+function enable_pullups()
+{
+  # Check if we are running on RPi
+  is_rpi
+  if [ $? -eq 1 ]; then
+    # Enable pull-ups for used GPIO lines
+    [ -n "$COUNTER1_ID" ] && gpio -g mode $COUNTER1_ID up
+    [ -n "$COUNTER2_ID" ] && gpio -g mode $COUNTER2_ID up
+    [ -n "$COUNTER3_ID" ] && gpio -g mode $COUNTER3_ID up
+    [ -n "$COUNTER4_ID" ] && gpio -g mode $COUNTER4_ID up
+    [ -n "$COUNTER5_ID" ] && gpio -g mode $COUNTER5_ID up
+    [ -n "$COUNTER6_ID" ] && gpio -g mode $COUNTER6_ID up
+    [ -n "$COUNTER7_ID" ] && gpio -g mode $COUNTER7_ID up
+    [ -n "$COUNTER8_ID" ] && gpio -g mode $COUNTER8_ID up
+  fi
+}
+
+function disable_pullups()
+{
+  # Check if we are running on RPi
+  is_rpi
+  if [ $? -eq 1 ]; then
+    # Disable pull-ups for used GPIO lines
+    [ -n "$COUNTER1_ID" ] && gpio -g mode $COUNTER1_ID tri
+    [ -n "$COUNTER2_ID" ] && gpio -g mode $COUNTER2_ID tri
+    [ -n "$COUNTER3_ID" ] && gpio -g mode $COUNTER3_ID tri
+    [ -n "$COUNTER4_ID" ] && gpio -g mode $COUNTER4_ID tri
+    [ -n "$COUNTER5_ID" ] && gpio -g mode $COUNTER5_ID tri
+    [ -n "$COUNTER6_ID" ] && gpio -g mode $COUNTER6_ID tri
+    [ -n "$COUNTER7_ID" ] && gpio -g mode $COUNTER7_ID tri
+    [ -n "$COUNTER8_ID" ] && gpio -g mode $COUNTER8_ID tri
+  fi
+}
+
+case "$1" in
+    start)
+	echo "Start $DESC"
+        enable_pullups
+	start-stop-daemon --start --quiet --background --oknodo --make-pidfile --pidfile $PIDFILE --exec $DAEMON -- $OPTS
+        ;;
+    restart|reload|force-reload)
+        echo "Error: argument '$1' not supported" >&2
+        exit 3
+        ;;
+    stop)
+	echo "Stop $DESC"
+	start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE
+        disable_pullups
+	;;
+    *)
+        echo "Usage: $0 start|stop" >&2
+        exit 3
+        ;;
+esac

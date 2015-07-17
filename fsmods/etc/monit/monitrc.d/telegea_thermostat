@@ -1,0 +1,5 @@
+# Telegea Thermostat daemon
+check process thermostat with pidfile /var/run/thermostat.pid
+    start program = "/etc/init.d/thermostat start" with timeout 60 seconds
+    stop program  = "/etc/init.d/thermostat stop"
+ 

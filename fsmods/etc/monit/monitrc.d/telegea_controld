@@ -1,0 +1,5 @@
+# Telegea Control daemon
+check process controld with pidfile /var/run/controld.pid
+    start program = "/etc/init.d/controld start" with timeout 60 seconds
+    stop program  = "/etc/init.d/controld stop"
+ 

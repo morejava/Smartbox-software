@@ -1,0 +1,68 @@
+#! /bin/bash
+##################################################################################
+#
+# Author:        Ondrej Wisniewski
+#
+# Description:   Checks that the connection to the remote server is established.
+#                If no connection is detected for a long time, an emergency reboot
+#                will be performed.
+#
+# Usage:         This script is called every hour by crond by placing it in 
+#                /etc/cron.hourly/
+#
+# Last modified: 13/04/2015
+#
+##################################################################################
+
+# load global config
+. /etc/geofox.conf
+
+# continue only if SSH tunnel is enabled in the configuration
+[ "$SSHTUNNEL_ENABLED" == "true" ] || exit 1
+
+# if the server connection is missing for MAX_ERR consecutive checks, 
+# then an emergency reboot will be performed
+MAX_ERR=12
+ERR_CNT_FILE=/tmp/servconn_err
+DBG_INFO_DIR=$STORAGE_DIR/debug
+
+# Log messages go to syslog
+LOGCMD="logger -i -t serverconn-watchdog"
+
+$LOGCMD "Checking remote server connection"
+
+# create error count file if it does not exist
+if [ ! -f $ERR_CNT_FILE ]; then
+   echo 0 > $ERR_CNT_FILE
+fi
+
+ERR_CNT=$(cat $ERR_CNT_FILE)
+
+# check if server connection is established
+if [ $(/bin/ss -n state established dst $RSERVER | wc | awk '{ print $1 }') -lt 2 ]; then
+
+   # connection is down, count errors
+   ERR_CNT=$(($ERR_CNT+1))
+   $LOGCMD "Server connection is down (check failed $ERR_CNT times)"
+
+   if [ $ERR_CNT -ge $MAX_ERR ]; then
+      
+      # too many consecutive errors
+      $LOGCMD "*** Server connection is down for too long"
+      $LOGCMD "*** Copying debug info to $DBG_INFO_DIR"
+      $LOGCMD "*** Rebooting system ..."
+      
+      # save debug info to permanent storage
+      /usr/local/bin/create_dbginfo.sh
+      
+      # reboot system
+      /sbin/reboot
+   fi
+else
+   # connection is up, reset error counter
+   ERR_CNT=0   
+fi
+
+echo $ERR_CNT > $ERR_CNT_FILE
+
+exit 0

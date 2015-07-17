@@ -1,0 +1,32 @@
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+# Print the IP address
+_IP=$(hostname -I) || true
+if [ "$_IP" ]; then
+  printf "My IP address is %s\n" "$_IP"
+fi
+
+# Create legacy TeleGea conf file (still used by some scripts) 
+# from new ini style config file
+sed "/^\s*\[/d;s/\s*;[^\]*$//" /etc/telegea.conf > /tmp/geofox.conf
+
+# Create TeleGea sensor and statefiles on data partition
+# at the very first run
+/usr/local/bin/create_statefiles.sh
+
+# activate pullup for 1-wire pin to avoid spurious device 
+# detection if there is nothing connected
+/usr/local/bin/gpio mode 7 up
+
+exit 0

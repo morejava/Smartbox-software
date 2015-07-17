@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+#    00-header - create the header of the MOTD
+#
+
+echo
+echo "*********************************" 
+echo "* Welcome to the TeleGea device *"
+echo "* (by DEK Technologies)         *" 
+echo "*********************************" 
+echo
+

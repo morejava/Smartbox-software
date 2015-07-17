@@ -1,0 +1,53 @@
+#! /bin/bash
+##################################################################################
+#
+# Author:        Ondrej Wisniewski
+#
+# Description:   Establishes a reverse ssh tunnel to the remote server
+#
+# Usage:         This script is placed in /etc/ppp/ip-up.d/ and therefore will be 
+#                called by pppd every time the ppp connection is established.
+#
+# Last modified: 10/10/2014
+#
+##################################################################################
+
+# This file is deprecated and replced by /usr/local/bin/ssh-tunnel.ssh
+# Exit immediately (or just delete the file)
+exit 0
+
+RUNFILE=/var/run/ssh-tunnel
+LOGFILE=/var/log/connection.log
+# 20121105 mfioretti: add separate flag file that declares that 
+# /etc/ppp/ssh-tunnel-sh IS still running
+SSH_TUNNEL_RUNNING=/var/run/ssh-tunnel_running
+
+
+# load generic configuration parameters
+. /etc/geofox.conf
+
+echo $(date +"%x %X")" start-ssh-tunnel called with IFACE="$IFACE" PPP_LOCAL="$PPP_LOCAL" CONNECTION="$CONNECTION >> $LOGFILE
+
+# some sanity checks
+[[ -z "$CONNECTION" ]] &&  exit 6
+[[ -n "$IFACE" && "$IFACE" != "eth0" && "$IFACE" != "wlan0" ]] &&  exit 1
+[[ "$CONNECTION" == "CABLE" && "$IFACE" != "eth0" ]] &&  exit 2
+[[ "$CONNECTION" == "WLAN" && "$IFACE" != "wlan0" ]] &&  exit 3
+[[ "$CONNECTION" == "GPRS" && -z $PPP_LOCAL ]] &&  exit 4
+
+# exit if another instance is already running
+[ -e $RUNFILE ] && exit 5
+# 20121105 mfioretti: exit if ssh-tunnel.sh is already running
+[ -e $SSH_TUNNEL_RUNNING ] && exit 5
+
+# create runfile
+touch $RUNFILE
+
+# save IP address on remote server if ppp connection is used
+[[ "$CONNECTION" == "GPRS" ]] && /etc/ppp/save-ip.sh $RUNFILE &
+
+# Launch the script which handles the ssh connection in an endless loop
+echo $(date +"%x %X")" Starting ssh tunnel service" >> $LOGFILE
+/etc/ppp/ssh-tunnel.sh $RUNFILE &
+
+exit 0

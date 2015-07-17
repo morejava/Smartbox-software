@@ -1,0 +1,92 @@
+#! /bin/bash
+### BEGIN INIT INFO
+# Provides:          	sensord
+# Required-Start:	$remote_fs $syslog
+# Required-Stop:	$remote_fs $syslog
+# Default-Start:	2 3 4 5
+# Default-Stop:		
+# Short-Description: Sensor daemon
+### END INIT INFO
+
+# load configuration parameters
+. /tmp/geofox.conf
+
+NAME=sensord
+PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin
+DAEMON=/usr/local/bin/$NAME
+PIDFILE=/var/run/$NAME.pid
+DESC="Sensor daemon"
+OPTS="$DHT_SENSOR1_PIN $DHT_SENSOR2_PIN $DHT_POWER_PIN $SHT_SENSOR1_DAT_PIN $SHT_SENSOR2_DAT_PIN"
+
+. /lib/init/vars.sh
+. /lib/lsb/init-functions
+
+# Functions to enable GPIO pull-up resistor
+# This is only applicable to the RPi board.
+
+function is_rpi()
+{
+  # Check if this is the RPi board
+  if [ $(cat /proc/cpuinfo | grep Hardware |  awk '{print $3}') == 'BCM2708' ]; then 
+    # Check if gpio tool is installed
+    if [ -n $(which gpio) ]; then  
+      return 1;
+    else
+      echo "The gpio tool cannot be found! Install it from http://wiringpi.com and try again."
+    fi
+  fi
+  return 0
+}
+
+function enable_pullup()
+{
+  # Check if we are running on RPi
+  is_rpi
+  if [ $? -eq 1 ]; then
+    # Enable pull-up for GPIO line used by 1w-therm driver
+    gpio -g mode $W1_THERM_PIN up
+    # Enable pull-up for GPIO lines used by SHT21 sensors
+    # TODO: add special case of pin 27 (former 21 on rev.1)
+    [ $SHT_SENSOR1_DAT_PIN -ne 0 ] && gpio -g mode $SHT_SENSOR1_DAT_PIN up
+    [ $SHT_SENSOR1_DAT_PIN -ne 0 ] && gpio -g mode $(($SHT_SENSOR1_DAT_PIN+1)) up
+    [ $SHT_SENSOR2_DAT_PIN -ne 0 ] && gpio -g mode $SHT_SENSOR2_DAT_PIN up
+    [ $SHT_SENSOR2_DAT_PIN -ne 0 ] && gpio -g mode $(($SHT_SENSOR2_DAT_PIN+1)) up
+  fi
+}
+
+function disable_pullup()
+{
+  # Check if we are running on RPi
+  is_rpi
+  if [ $? -eq 1 ]; then
+    # Disable pull-up for GPIO line used by 1w-therm driver
+    gpio -g mode $W1_THERM_PIN tri
+    # Disable pull-up for GPIO lines used by SHT21 sensors
+    # TODO: add special case of pin 27 (former 21 on rev.1)
+    [ $SHT_SENSOR1_DAT_PIN -ne 0 ] && gpio -g mode $SHT_SENSOR1_DAT_PIN tri
+    [ $SHT_SENSOR1_DAT_PIN -ne 0 ] && gpio -g mode $(($SHT_SENSOR1_DAT_PIN+1)) tri
+    [ $SHT_SENSOR2_DAT_PIN -ne 0 ] && gpio -g mode $SHT_SENSOR2_DAT_PIN tri
+    [ $SHT_SENSOR2_DAT_PIN -ne 0 ] && gpio -g mode $(($SHT_SENSOR2_DAT_PIN+1)) tri
+  fi
+}
+
+case "$1" in
+    start)
+	echo "Start $DESC"
+        enable_pullup
+	start-stop-daemon --start --quiet --background --oknodo --make-pidfile --pidfile $PIDFILE --exec $DAEMON -- $OPTS
+        ;;
+    restart|reload|force-reload)
+        echo "Error: argument '$1' not supported" >&2
+        exit 3
+        ;;
+    stop)
+	echo "Stop $DESC"
+	start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE
+        disable_pullup
+	;;
+    *)
+        echo "Usage: $0 start|stop" >&2
+        exit 3
+        ;;
+esac

@@ -1,0 +1,81 @@
+#! /bin/sh
+##################################################################################
+#
+# Author:        Ondrej Wisniewski
+#
+# Description:   Saves log files from the local storage partition to an archive
+#                file and transfers it to a remote server.
+#
+# Usage:         This script should be called periodically once a day. To achieve
+#                this on a Debian system just place the script in /etc/cron.daily/
+#
+# Last modified: 2014/03/12
+#
+##################################################################################
+
+
+# load generic configuration parameters
+. /etc/geofox.conf
+
+# We create a specific data directory on the server for every device, using its
+# hostname so we can tell where the data comes from
+RCMD="test -d "$(hostname)$PLANTID" || mkdir $(hostname)$PLANTID"
+
+# In order to make sure we read the updated data on the storage partition, it has 
+# to be mounted just before reading it.
+# mfioretti 20121012 we do it only if DATA_ACQ_MODE=NIBE
+
+if [ "$DATA_ACQ_MODE" = "NIBE" ]
+  then
+  mount $STORAGE_PART $STORAGE_DIR
+  fi
+
+# The files names created on the storage partition have the following format:
+# YYMMDD-X.LOG where YYMMDD is the date when the file was created and X is a 
+# sequential number starting at 1. Starting when the data recording was enabled,
+# every 24h a new file is created.
+# We don't want to save the files that are still being written so we choose
+# the ones from before that date. If the file with the current date already 
+# exists, then this is the one being written and we choose the one from yesterday, 
+# otherwise we choose the one from two days ago.
+# Note: the second case is there for legacy and should not happen anymore
+if [ -f $STORAGE_DIR/$(date +%y%m%d)-1.LOG ];  then 
+  COMMONNAME=$(date --date=yesterday +%y%m%d)
+else
+  COMMONNAME=$(date --date='2 days ago' +%y%m%d)
+fi
+
+# We store all log files for one day in an archive with the following name:
+# YYMMDD.tgz where YYMMDD is the common part of all the logfile names contained 
+# in the archive file
+TARFILE=$COMMONNAME.tgz
+
+# zip latest data files which are already completed on storage partition and
+# store resulting archive in our data directory
+cd $STORAGE_DIR
+if [ -e $COMMONNAME-1.LOG ];  then
+  tar -czf $DATA_DIR/$TARFILE $COMMONNAME*
+fi
+cd /
+
+# delete saved logfiles from storage partition
+#rm -f $STORAGE_DIR/$FILEFILTER
+
+# unmount data storage partition
+# mfioretti 20121012  only if DATA_ACQ_MODE=NIBE
+
+if [ "$DATA_ACQ_MODE" = "NIBE" ]
+  then
+  umount $STORAGE_DIR
+  fi
+
+# exit now if no file has been saved
+test -e $DATA_DIR/$TARFILE || exit 1
+
+# exit now if there is no connection to remote server
+#test -e $PPPD_PID || exit 2
+
+# send data to remote server
+/usr/local/bin/send-geodat.sh
+
+exit 0

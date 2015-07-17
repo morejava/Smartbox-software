@@ -1,0 +1,5 @@
+# Telegea Register scanner (data log generator)
+check process modbus_reg_scanner with pidfile /var/run/modbus_register_scanner.pid
+    start program = "/etc/init.d/modbus_reg_scanner start" with timeout 60 seconds
+    stop program  = "/etc/init.d/modbus_reg_scanner stop"
+ 

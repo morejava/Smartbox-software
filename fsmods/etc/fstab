@@ -1,0 +1,18 @@
+#
+# SD card partitions
+/dev/mmcblk0p1  /boot           vfat    defaults,ro          0       2
+/dev/mmcblk0p2  /               ext4    defaults,noatime,ro  0       1
+/dev/mmcblk0p3  /media/data     ext4    defaults,noatime  0       0
+#
+# Putting all dynamic files in tmpfs to minimize SD card wear
+tmpfs           /tmp            tmpfs   defaults,noatime,mode=1777 0 0
+tmpfs           /var/run        tmpfs   defaults,noatime 0 0
+tmpfs           /var/log        tmpfs   defaults,noatime,mode=755 0 0
+tmpfs           /var/lock       tmpfs   defaults,noatime 0 0
+tmpfs           /var/lib/logrotate   tmpfs   defaults,noatime 0 0 
+tmpfs           /var/lib/dhcp   tmpfs   defaults,noatime 0 0 
+#tmpfs           /lib/init/rw    tmpfs   defaults,noatime 0 0 
+tmpfs           /geofox_data    tmpfs   defaults,noatime 0 0
+#
+# proc filesystem
+proc            /proc           proc    defaults          0       0

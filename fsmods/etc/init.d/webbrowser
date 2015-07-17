@@ -1,0 +1,40 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:             webbrowser
+# Required-Start:       $syslog
+# Required-Stop:        $syslog
+# Default-Start:        2 3 4 5
+# Default-Stop:         
+# Short-Description: launch webbrowser in kios mode
+### END INIT INFO
+
+
+NAME=webbrowser
+PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin
+DAEMON=/usr/local/bin/$NAME.sh
+PIDFILE=/var/run/$NAME.pid
+DESC="Web Browser"
+OPTS=
+
+. /lib/init/vars.sh
+. /lib/lsb/init-functions
+
+case "$1" in
+    start)
+        echo "Start web browser"
+        /usr/bin/xinit $DAEMON &
+        echo $! > $PIDFILE
+        ;;
+    restart|reload|force-reload)
+        echo "Error: argument '$1' not supported" >&2
+        exit 3
+        ;;
+    stop)
+        echo "Stop web browser"
+        kill $(cat $PIDFILE)
+        ;;
+    *)
+        echo "Usage: $0 start|stop" >&2
+        exit 3
+        ;;
+esac
