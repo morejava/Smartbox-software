@@ -2,9 +2,12 @@
 
 ## Description
 
-This module implements a thermostat algorithm to control the temperature of one zone. Depending on the operating mode, the desired target temperature is specified and compared with the real temperature measured via a sensor in the controlled zone. As a result of this comparison a control is activated (relay switch) to change the zone's temperature. The control acting on the temperature can be a heater or an air condition unit, depending on the season mode. Two separate control units are supported to cover most plant configurations.  
+This module implements a thermostat algorithm to control the temperature of one zone. Depending on the operating mode, the desired target temperature is specified and compared with the real temperature measured via a sensor in the controlled zone. As a result of this comparison a control is activated (relay switch) to change the zone's temperature. The control acting on the temperature can be a heater or an air condition unit, depending on the season mode. Two separate control units and three fan speeds are supported to cover most plant configurations.  
 
-The temperature is measured with a Modbus request to the Sensor module and the control is activated with a Modbus request to the Control module.  
+The temperature is measured with a Modbus request to the Sensor module and the controls are activated with a Modbus request to the Control module. Optionally the sensor and controls communication can be performed via the XRF module, using wireless communication with the respective sensors and controls.  
+&nbsp;
+
+![Thermostat application overview](pictures/telegea-overview-thermostat.png)
 
 The algorithm can work in different operating modes (see below), allowing for great flexibility and easy usage.  
 
