@@ -22,4 +22,4 @@ Please look in the doc folder for the documentation files.
 
 #### Application modules
 * [Thermostat module](doc/10-thermostat-module.md)
-
+* [Thermostat GUI module](doc/11-thermostatgui-module.md)
