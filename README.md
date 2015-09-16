@@ -6,7 +6,7 @@ Software for the Telegea Smartbox device. This is the remote device for collecti
 
 ### Documentation
 
-Please look in the doc folder for the documentation files.  
+Please look in the doc folder for the complete list of documentation files.  
 
 #### General
 * [Telegea Overview](doc/01-overview.md)
@@ -23,3 +23,7 @@ Please look in the doc folder for the documentation files.
 #### Application modules
 * [Thermostat module](doc/10-thermostat-module.md)
 * [Thermostat GUI module](doc/11-thermostatgui-module.md)
+
+#### How-To Instructions
+* [Telegea OS installation](doc/raspi-os-installation.md)
+* [Smartbox configuration](doc/smartbox-configuration.md)

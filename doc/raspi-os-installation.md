@@ -64,7 +64,7 @@ Then run the upgrade procedure:
 
 ### Upgrade Kernel [optional]
 
-The Linux Kernel release 3.18.8 or later (with fbtft driver) is needed for using the RPi display. Therefore, if a kernel (firmware) update is needed, it can be performed as follows:
+The RaspberryPi Linux Kernel release 4.0 or later is needed for full support of all needed hardware components. Therefore, if a kernel (firmware) update is needed, it can be performed as follows:
 
     apt-get install rpi-update
     rpi-update
@@ -72,14 +72,58 @@ The Linux Kernel release 3.18.8 or later (with fbtft driver) is needed for using
     
 ### Modify kernel configuration
 
-Assuming that a Kernel 3.18.x (or later) is installed, device tree overlays are used to load the needed kernel drivers at startup. We need the `w1-gpio` related drivers to enable 1-wire support and `rpi-display` related drivers to enable support for the Watterott RPi display. The latter is used for the thermostat application GUI only. Please note that, when enabling this overlay, almost all GPIO pins will be used for the display and are not available to other applications any more.  
+Assuming that a Kernel 4.0 (or later) is installed, device tree overlays are used to load the needed kernel drivers at startup. We need to enable and configure a number of drivers to make certain hardware components work properly.  
 
-Add the overlays and parameters for 1-wire bus and, only if needed, RPI display to /boot/config.txt:
+The following overlays need to be added to the kernel configuration file `/boot/config.txt`  
 
-     dtoverlay=w1-gpio,gpiopin=4
-     dtoverlay=rpi-display,speed=32000000,rotate=270
+#### Raspberry Pi model B based device
 
-     
+1-wire temp bus is used for the DS18B20 sensors, default pin is 4
+
+    dtoverlay=w1-gpio,gpiopin=4
+
+SPI is used for DHT sensor (disable this if touchscreen is used)  
+    
+    dtparam=spi=on
+    
+Enable this if Watterott RPi resistive touchscreen is used  
+
+    dtoverlay=rpi-display,speed=32000000,rotate=270
+  
+  
+#### Compute module based device
+
+The compute model based custom device integrates some additional hardware which needs to be enabled.
+
+i2c-0 is used for RTC chip (on alternative pins 28, 29)
+    
+    dtparam=i2c0=on
+
+i2c-1 is used for cap touchscreen input  (on pins 2, 3)
+    
+    dtparam=i2c1=on
+
+SPI is used for DHT sensor (on alternative pins 37, 38)
+(disable this if touchscreen is used)  
+    
+    dtparam=spi=on
+
+1-wire temp bus is used for the DS18B20 sensors, specify alternative pin (default 4)
+* Sensor connector 1: pin 38  
+* Sensor connector 2: pin  0  
+
+
+    dtoverlay=w1-gpio,gpiopin=0
+
+Second serial line is used for XRF or DPI module (on alternative pins 32, 33)
+    
+    dtoverlay=uart1,txd1_pin=32,rxd1_pin=33
+
+Enable this if Adafruit PiTFT resistive touchscreen is used  
+
+    dtoverlay=pitft28-resistive,speed=32000000,rotate=270
+
+
 ### Install additional packages
 
 Now the needed packages which are missing from the base system will be installed.
