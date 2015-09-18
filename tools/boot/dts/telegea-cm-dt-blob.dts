@@ -1,0 +1,44 @@
+/dts-v1/;
+
+/ {
+  videocore {
+
+    pins_cm {
+
+      pin_config {
+
+        pin@default {
+          polarity = "active_high";
+          termination = "pull_down";
+          startup_state = "inactive";
+          function = "input";
+        }; // pin
+
+        // ENABLE CLOCK GENERATION VIA GP_CLK FUNCTION
+        pin@p42 { function = "gp_clk";  termination = "pull_down";  }; // Ethernet Clock 25 MHz
+
+        // BANK 2 - DON'T TOUCH UNLESS YOU KNOW WHAT YOU'RE DOING //
+        pin@p46 { function = "input";   termination = "no_pulling"; drive_strength_mA = <8>; polarity = "active_high"; }; // HPD_N
+        pin@p47 { function = "output";  termination = "no_pulling"; drive_strength_mA = <8>; polarity = "active_low"; startup_state = "active"; }; // STATUS LED / EMMC_DISABLE_N CONTROL
+        pin@p48 { function = "sdcard";  termination = "pull_up";    drive_strength_mA = <8>; }; // SD CLK
+        pin@p49 { function = "sdcard";  termination = "pull_up";    drive_strength_mA = <8>; }; // SD CMD
+        pin@p50 { function = "sdcard";  termination = "pull_up";    drive_strength_mA = <8>; }; // SD D0
+        pin@p51 { function = "sdcard";  termination = "pull_up";    drive_strength_mA = <8>; }; // SD D1
+        pin@p52 { function = "sdcard";  termination = "pull_up";    drive_strength_mA = <8>; }; // SD D2
+        pin@p53 { function = "sdcard";  termination = "pull_up";    drive_strength_mA = <8>; }; // SD D3
+
+      }; // pin_config
+
+      pin_defines {
+        pin_define@HDMI_CONTROL_ATTACHED { type = "internal"; number = <46>; }; // HPD_N on GPIO46
+      }; // pin_defines
+
+    }; // pins_cm
+    
+    clock_setup {
+       clock@PWM { freq = <2400000>; };
+       clock@GPCLK0 { freq = <12288000>; };
+       clock@GPCLK1 { freq = <25000000>; };
+    };	
+  }; // videocore
+};

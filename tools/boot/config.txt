@@ -1,0 +1,45 @@
+gpu_mem=16
+#act_led_trigger=heartbeat
+
+############################################
+# i2c-0 is used for RTC chip
+############################################
+#dtparam=i2c0=on
+dtoverlay=i2c0-bcm2708,sda0_pin=28,scl0_pin=29
+
+############################################
+# i2c-1 is used for cap touchscreen input
+############################################
+dtparam=i2c1=on
+
+############################################
+# SPI is used for DHT sensor on connector 1
+# Note: disable this if touchscreen is used
+############################################
+#dtparam=spi=on
+dtoverlay=spi-bcm2708-dek,miso_pin=37,mosi_pin=38
+
+############################################
+# Specify pin used for 1-wire temp bus
+# Sensor connector 1: pin 38
+# Sensor connector 2: pin  0
+############################################
+dtoverlay=w1-gpio,gpiopin=0
+
+############################################
+# Specify pins used for second serial line
+# Connected to XRF or DPI module
+############################################
+dtoverlay=uart1,txd1_pin=32,rxd1_pin=33
+
+############################################
+# Enable this if Adafruit PiTFT resistive 
+# touchscreen is used
+############################################
+#dtoverlay=pitft28-resistive,speed=32000000,rotate=270
+
+############################################
+# Enable this if Watterorr RPi display 
+# resistive touchscreen is used
+############################################
+#dtoverlay=rpi-display,speed=32000000,rotate=270

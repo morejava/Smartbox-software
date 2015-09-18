@@ -1,0 +1,40 @@
+/*
+ * Device tree overlay for spi-bcm2835
+ * 
+ * Compile:
+ * dtc -@ -I dts -O dtb -o spi-bcm2708-dek-overlay.dtb spi-bcm2708-dek-overlay.dts
+ */
+
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "brcm,bcm2835", "brcm,bcm2836", "brcm,bcm2708", "brcm,bcm2709";
+	/* setting up compatiblity to allow loading the spi-bcm2835 driver */
+	fragment@0 {
+		target = <&spi0>;
+		__overlay__ {
+			pinctrl-0 = <&spi0_pins>;
+			status = "okay";
+			compatible = "brcm,bcm2708-spi";			
+		};
+	};
+
+	fragment@1 {
+		target = <&gpio>;
+		__overlay__ {
+			spi0_pins: spi0_pins {
+				brcm,pins = <7 8 9 10 11>;
+				brcm,function = <4>; /* alt0 */
+			};
+		};
+	};
+
+	__overrides__ {
+		ce1_pin  = <&spi0_pins>,"brcm,pins:0";
+		ce0_pin  = <&spi0_pins>,"brcm,pins:4";
+		miso_pin = <&spi0_pins>,"brcm,pins:8";
+		mosi_pin = <&spi0_pins>,"brcm,pins:12";
+		sclk_pin = <&spi0_pins>,"brcm,pins:16";
+	};
+};
