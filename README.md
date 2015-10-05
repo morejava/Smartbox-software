@@ -23,6 +23,7 @@ Please look in the doc folder for the complete list of documentation files.
 #### Application modules
 * [Thermostat module](doc/10-thermostat-module.md)
 * [Thermostat GUI module](doc/11-thermostatgui-module.md)
+* [MQTT client](doc/12-mqtt-client-module.md)
 
 #### How-To Instructions
 * [Telegea OS installation](doc/raspi-os-installation.md)

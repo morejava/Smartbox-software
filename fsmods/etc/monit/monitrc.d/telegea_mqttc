@@ -1,0 +1,4 @@
+# Telegea MQTT client daemon
+check process mqttc with pidfile /var/run/mqttc.pid
+    start program = "/etc/init.d/mqttc start" with timeout 60 seconds
+    stop program  = "/etc/init.d/mqttc stop"
