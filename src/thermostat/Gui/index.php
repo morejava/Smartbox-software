@@ -14,12 +14,14 @@
       $conf_file = "/etc/telegea.conf";
       $config = parse_ini_file($conf_file, true);
       $plantid = $config[generic][PLANTID];
-      $location = $config[generic][LOCATION];
       $apiurl = $config[generic][TELEGEA_API];
       $apikey = $config[generic][API_KEY];
       $control1 = $config[thermostat][HEATCOOL_CTRL1_REG_NAME];
       $control2 = $config[thermostat][HEATCOOL_CTRL2_REG_NAME];
-      $user_more = $config[thermostat][USER_MODE];
+      $user_mode = $config[thermostat][USER_MODE];
+      $location = $config[thermostatgui][LOCATION];
+      $owmapi = $config[thermostatgui][OWM_API];
+      $owmappid = $config[thermostatgui][OWM_APPID];
 
       // sanity checks
       $webapi_enabled = ($apikey=="" || $plantid=="") ? "false" : "true";
@@ -28,7 +30,7 @@
       // gui configuration settings
       $cntr1_visibility = ($control1=="") ? "hidden" : "visible";
       $cntr2_visibility = ($control2=="") ? "hidden" : "visible";
-      $operation_mode = ($user_more=="smart") ? "temp_override" : "immediate";
+      $operation_mode = ($user_mode=="smart") ? "temp_override" : "immediate";
       
       // print debug info as html comments
       echo "\n";
@@ -63,7 +65,7 @@
         setInterval('getTime()',30000); // 30s 
         
         // update weather info periodically
-        setInterval('getWeather()',300000); // 5min
+        setInterval('getWeather()',600000); // 10min
       });
                 
       function getUpdates() {
@@ -117,7 +119,7 @@
       function getWeather() {
                   
         // get the latest weather data for our location from OpenWeatherMap with a webservice call
-        $.getJSON('http://api.openweathermap.org/data/2.5/weather?q=<?php echo $location?>&callback=?', function(data) {
+        $.getJSON('<?php echo $owmapi?>?q=<?php echo $location?>&appid=<?php echo $owmappid?>&callback=?', function(data) {
                                                                                 
           //document.getElementById("weather_cond").innerHTML= data.weather[0].description;
           document.getElementById("weather_icon").innerHTML= '<img style="vertical-align: middle; width: 50px; height: 50px;" src="http://openweathermap.org/img/w/'+data.weather[0].icon+'.png" ondragstart="return false;"/>';
