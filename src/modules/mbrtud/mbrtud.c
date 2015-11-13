@@ -7,27 +7,29 @@
  *  - Queries Modbus RTU devices (e.g. NIBE Modbus40) on external request
  * 
  *  Build command:
- *  gcc mbrtud.c -o mbrtud -lmbsrv `pkg-config --libs --cflags libmodbus`
+ *  gcc mbrtud.c -o mbrtud -lmbsrv -lmodbus
  *  
  *  Changelog:
  *   22-07-2014: Initial version
+ *   12-11-2015: Added support for direction control of RS485 trasceiver
+ *               (needs libmodbus > v3.1.2)
  * 
- *  Copyright 2013-2015, DEK Italia
+ * Copyright 2013-2015, DEK Italia
  * 
- *  This file is part of the Telegea platform.
+ * This file is part of the Telegea platform.
  * 
- *  Telegea is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * Telegea is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with Telegea.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with Telegea.  If not, see <http://www.gnu.org/licenses/>.
  * 
  ******************************************************************/
 
@@ -44,13 +46,14 @@
 #include "modbustcp_server_lib.h"
 
 
-#define VERSION "0.1"
+#define VERSION "0.2"
 
 #define MODBUS_SLAVE_ADDRESS MODBUS_SLAVE_MBRTU_MODULE
 
 #define SERIAL_PORT_PREFIX   "/dev/tty"
 #define DEFAULT_BAUDRATE      9600
 #define DEFAULT_SLAVE_ADDR    1
+#define DEFAULT_RTS_DELAY     100
 
 
 static modbus_t *mb;
@@ -186,7 +189,6 @@ int main(int argc, char* argv[])
    int  slave_addr      = DEFAULT_SLAVE_ADDR;
    char serial_port[32] = SERIAL_PORT_PREFIX;
    int  baud_rate       = DEFAULT_BAUDRATE;
-   struct timeval timeout;
    
    
    if (argc<4)
@@ -213,7 +215,7 @@ int main(int argc, char* argv[])
    strcat(serial_port,    argv[3]);
    if (argc>4) baud_rate = atoi(argv[4]);
 
-# if 1   
+# if 0
    printf("slave_addr=%d\n", slave_addr);
    printf("reg_addr_offset=%d\n", reg_addr_offset);
    printf("serial_port=%s\n", serial_port);
@@ -238,18 +240,42 @@ int main(int argc, char* argv[])
       return 2;
    }
   
-   timeout.tv_sec = 20;
-   timeout.tv_usec = 0;
-   modbus_set_response_timeout(mb, &timeout); 
-   timeout.tv_sec = 1;
-   timeout.tv_usec = 0;
-   modbus_set_byte_timeout(mb, &timeout);
-  
-   //modbus_set_debug(mb, TRUE);
-
    syslog(LOG_DAEMON | LOG_NOTICE, "Connection to RTU slave %d established on %s at %dbaud\n", 
                                     slave_addr, serial_port, baud_rate);
       
+   /* Set Modbus timeouts */
+   modbus_set_response_timeout(mb, 5, 0); 
+   modbus_set_byte_timeout(mb, 1, 0);
+   
+   /* Specific setting for directoin control of the RS485 transceiver */
+   if (strstr(serial_port, "USB") == NULL)
+   {
+      /* Enable RS485 direction control via RTS line */
+      if (modbus_rtu_set_rts(mb, MODBUS_RTU_RTS_DOWN) == -1)
+      {
+         syslog(LOG_DAEMON | LOG_ERR, "Setting RTS mode failed: %s\n", 
+                                       modbus_strerror(errno));
+         modbus_free(mb);
+         return 3;
+      }
+      
+      /* Set RTS control delay (before and after transmission) */
+      if (DEFAULT_RTS_DELAY > 0)
+      {
+         if (modbus_rtu_set_rts_delay(mb, DEFAULT_RTS_DELAY) == -1)
+         {
+            syslog(LOG_DAEMON | LOG_ERR, "Setting RTS delay failed: %s\n", 
+                                          modbus_strerror(errno));
+            modbus_free(mb);
+            return 4;
+         }
+      }
+      
+      syslog(LOG_DAEMON | LOG_NOTICE, "using direction control via RTS line");
+   }
+   
+   //modbus_set_debug(mb, TRUE);
+
    /* Start Modbus TCP server loop */
    modbustcp_server(MODBUS_SLAVE_ADDRESS,  // Modbus slave address
                     read_register_handler, // Read register handler

@@ -1,6 +1,6 @@
 #
 # Makefile
-# gcc mbrtud.c -o mbrtud -lmbsrv `pkg-config --libs --cflags libmodbus`
+# gcc mbrtud.c -o mbrtud -lmbsrv -lmodbus
 #
 
 RM = \rm -f
@@ -16,7 +16,7 @@ LSWI = -L
 LIBS =  $(LSWI)/usr/local/lib
 
 # List of objects files for the dependency
-OBJS_DEPEND= -lmbsrv `pkg-config --libs --cflags libmodbus`
+OBJS_DEPEND= -lmbsrv -lmodbus
 
 # OPTIONS = --verbose
 
