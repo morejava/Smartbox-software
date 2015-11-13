@@ -13,10 +13,26 @@
           startup_state = "inactive";
           function = "input";
         }; // pin
+        
+        // TELEGEA custom board specific functions
+        
+        // Enable UART0
+        pin@p14 { function = "uart0";   termination = "no_pulling"; }; // UART0 TX
+        pin@p15 { function = "uart0";   termination = "pull_up";    }; // UART0 RX
+        pin@p16 { function = "input";   termination = "no_pulling"; }; // not used
+        pin@p17 { function = "uart0";   termination = "no_pulling"; }; // UART0 RTS used for RS485 direction control
+       
+        // TX_EN and WPS_EN lines for Wifi Module, set to HIGH on startup
+        pin@p22 { function = "output";  termination = "no_pulling"; polarity = "active_high"; startup_state = "active"; };
+        pin@p23 { function = "output";  termination = "no_pulling"; polarity = "active_high"; startup_state = "active"; };
+
+        // Reset line for LAN chip, set to LOW on startup
+        pin@p36 { function = "output";  termination = "no_pulling"; polarity = "active_high"; startup_state = "inactive"; };
 
         // ENABLE CLOCK GENERATION VIA GP_CLK FUNCTION
         pin@p42 { function = "gp_clk";  termination = "pull_down";  }; // Ethernet Clock 25 MHz
 
+        
         // BANK 2 - DON'T TOUCH UNLESS YOU KNOW WHAT YOU'RE DOING //
         pin@p46 { function = "input";   termination = "no_pulling"; drive_strength_mA = <8>; polarity = "active_high"; }; // HPD_N
         pin@p47 { function = "output";  termination = "no_pulling"; drive_strength_mA = <8>; polarity = "active_low"; startup_state = "active"; }; // STATUS LED / EMMC_DISABLE_N CONTROL
