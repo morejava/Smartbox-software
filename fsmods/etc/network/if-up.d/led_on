@@ -1,0 +1,18 @@
+#! /bin/bash
+##################################################################################
+#
+# Author:        Ondrej Wisniewski
+#
+# Description:   Start the Led handling script led.sh
+#
+# Usage:         This script is called automatically when a network interface 
+#                comes up by placing it in /etc/init.d/network/ifup.d/
+#
+# Last modified: 03/11/2015
+#
+##################################################################################
+
+export IFACE=$IFACE
+/usr/local/bin/led.sh on &
+
+exit 0
