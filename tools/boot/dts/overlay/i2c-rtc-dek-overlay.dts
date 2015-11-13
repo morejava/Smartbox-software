@@ -1,0 +1,25 @@
+// Definitions for Abracon I2C based Real Time Clocks
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "brcm,bcm2708";
+
+	fragment@0 {
+		target = <&i2c_vc>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "okay";
+			
+			abx80x: abx80x@69 {
+				compatible = "abracon,abx80x";
+				reg = <0x69>;
+				status = "disable";
+			};
+		};
+	};
+	__overrides__ {
+		abx80x  = <&abx80x>,"status";
+	};
+};
