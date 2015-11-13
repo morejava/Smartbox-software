@@ -10,6 +10,7 @@
 #
 # Changelog:
 #   02-10-2015: Initial version
+#   12-11-2015: Added Service commands for ssh tunnel handling
 # 
 # Copyright 2015, DEK Italia
 # 
@@ -55,7 +56,7 @@ import syslog
 #import socket
 #import sys
 
-version="0.2"
+version="0.3"
 
 # Constant definitions
 clientId="smartbox"
@@ -102,16 +103,31 @@ def do_modbusRequest(cprm):
         syslog.syslog(syslog.LOG_ERR, "Command missing required parameters")
         
     return;
-    
+
+
+# Service command types usd by do_serviceCmd()
+srvCmdType = {
+    "1": "/etc/init.d/ssh_tunnel start",
+    "2": "/etc/init.d/ssh_tunnel stop"
+}   
 
 # Command handler for Service command
 def do_serviceCmd(cprm):
     syslog.syslog(syslog.LOG_NOTICE, "Received Service command")
     
-    # TODO: add service command handling here
-    
+    try:
+        srvCmd = srvCmdType[cprm[1]]
+        syslog.syslog(syslog.LOG_NOTICE, "srvCmd =  %s" % srvCmd)
+        try:
+            reply = subprocess.check_output(srvCmd.split())
+        except subprocess.CalledProcessError:
+            reply = "ERROR"
+            syslog.syslog(syslog.LOG_ERR, "Service command execution failed")
+    except KeyError:
+        reply = "ERROR"
+        syslog.syslog(syslog.LOG_ERR, "Unknown service command type: %s" % cprm[1])
+           
     # Publish reply with command result
-    reply = "OK"
     client.publish(topic_reply, reply, 0, False)
     
     return;
@@ -126,14 +142,6 @@ def do_whatever(cprm):
     client.publish(topic_reply, reply, 0, False)
     
     return;
-
-
-# Command types
-cmdTypeHandler = {
-    "1": do_modbusRequest,
-    "2": do_serviceCmd,
-    "3": do_whatever
-}
 
 
 # The callback for when the client receives a CONNACK response from the broker.
@@ -156,6 +164,13 @@ def on_disconnect(client, userdata, rc):
         syslog.syslog(syslog.LOG_NOTICE, "Disconnected unexpectedly from MQTT with code " + str(rc))
     return;
 
+
+# Command types used by on_message()
+cmdTypeHandler = {
+    "1": do_modbusRequest,
+    "2": do_serviceCmd,
+    "3": do_whatever
+}
 
 # The callback for when a PUBLISH message is received from the broker.
 def on_message(client, userdata, msg):

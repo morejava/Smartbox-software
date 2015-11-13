@@ -9,7 +9,7 @@
 ### END INIT INFO
 
 # load generic configuration parameters
-#. /etc/geofox.conf
+. /etc/geofox.conf
 
 NAME=ssh-tunnel
 PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin
@@ -21,6 +21,11 @@ OPTS=
 . /lib/init/vars.sh
 . /lib/lsb/init-functions
 
+if [ "$SSHTUNNEL_ENABLED" != "true" ]; then
+    echo "$NAME module is not enabled"
+    exit 1
+fi
+
 case "$1" in
     start)
 	echo "Start $DESC"
@@ -28,7 +33,7 @@ case "$1" in
         ;;
     restart|reload|force-reload)
         echo "Error: argument '$1' not supported" >&2
-        exit 3
+        exit 2
         ;;
     stop)
 	echo "Stop $DESC"

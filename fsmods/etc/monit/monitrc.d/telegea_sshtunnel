@@ -1,5 +1,5 @@
 # Telegea SSH connection to Telegea server
 check process ssh-tunnel with pidfile /var/run/ssh-tunnel.pid
-    start program = "/etc/init.d/ssh_tunnel start" with timeout 60 seconds
-    stop program  = "/etc/init.d/ssh_tunnel stop"
+   mode passive
+   if does not exist then unmonitor
  
