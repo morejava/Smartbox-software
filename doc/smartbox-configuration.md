@@ -19,13 +19,9 @@ Plant Id (assigned after registration on Telegea server)
 
     PLANTID=<xyz>
 
-Geografic location (city name and contry code)  
-
-    LOCATION=<mytown,mycountrycode>
-
 HTTP API parameters (API_KEY assigned after registration on Telegea server)
 
-    TELEGEA_API="https://www.telegea.org/input"
+    TELEGEA_API="https://my.telegea.org/input"
     API_KEY=<1234567890>
 
 Storage location for raw sensor data (don't change)
@@ -37,11 +33,24 @@ Storage location of saved geodat files  (don't change)
     DATA_DIR=/geofox_data
 
 
+### Parameters for SSH connection to Telegea server
+
+Section name is `[sshtunnel]`
+
+Enable this module if you want to allow remote ssh console access from the Telegea server.
+
+    SSHTUNNEL_ENABLED=false
+
+Remote connection type (specify one of the following: WLAN, CABLE)
+
+    CONNECTION=CABLE
+
+
 ### Parameters for the Register scanner (data logger) application
 
 Section name is `[regscanner]`
 
-Enable this module (true or false)
+Enable this module if you want to periodically record data locally and send it to the Telegea server.
 
     REGSCANNER_ENABLED=false
 
@@ -58,11 +67,24 @@ Location of the file containing the register list
     REGISTER_LIST="/etc/telegea_mbreg_list.txt"
 
 
+### Parameters for MQTT client
+
+Section name is `[mqttc]`
+
+This module is enabled by default. It allows to send commands to the Smartbox from the Telegea server.
+
+    MQTTC_ENABLED=true
+
+Name of the MQTT broker
+
+    BROKER_ADDR="telegea.org"
+
+
 ### Parameters for the Alarm monitor 
 
 Section name is `[alrmonitor]`
 
-Enable this module (true or false)
+Enable this module if you want to send alarm notifications caused by status inputs to the Telegea server.
 
     ALRMONITOR_ENABLED=false
 
@@ -79,7 +101,7 @@ Seconds between two complete read loops
 
 Section name is `[thermostat]`
 
-Enable this module (true or false)
+Enable this module if you want to run the smart thermostat application.
 
     THERMOSTAT_ENABLED=false
     
@@ -102,7 +124,7 @@ Operating parameters
 
 Section name is `[thermostatgui]`
 
-Enable this module (true or false)
+Enable this module if you want to run the thermostat GUI (needs the thermostat application).
 
     THERMOSTATGUI_ENABLED=false
     
@@ -110,12 +132,21 @@ IP address of the device where thermostat module is running
 
     THERMOSTAT_DEVICE_IP="127.0.0.1"
 
+Geografic location (city name and contry code)  
+
+    LOCATION=<mytown,mycountrycode>
+
+Open Weather Map data (for weather info on GUI)
+
+    OWM_API="http://api.openweathermap.org/data/2.5/weather"
+    OWM_APPID=
+    
 
 ### Parameters for the Sensor module
 
 Section name is `[sensord]`
 
-Enable this module (true or false)
+Enable this module if you want to read the wired temperature and humidity sensors.
 
     SENSORD_ENABLED=false
 
@@ -147,7 +178,7 @@ GPIO line used by 1w-therm driver
 
 Section name is `[controld]`
 
-Enable this module (true or false)
+Enable this module if you want to control actuators via the connected relays.
 
     CONTROLD_ENABLED=false
 
@@ -179,7 +210,7 @@ List of Kernel Ids of the GPIO pins we want to control
 
 Section name is `[pulsecountd]`
 
-Enable this module (true or false)
+Enable this module if you want to read pulse counter inputs.
 
     PULSECOUNTD_ENABLED=false
 
@@ -224,7 +255,7 @@ List of state files for virtual counters
 
 Section name is `[statusd]`
 
-Enable this module (true or false)
+Enable this module if you want to read the status inputs.
 
     STATUSD_ENABLED=false
 
@@ -268,7 +299,7 @@ List of Kernel Ids of the GPIO pin pairs or single pins we want to watch
 
 Section name is `[mbrtud]`
 
-Enable this module (true or false)
+Enable this module if you want to communicate with a Modbus RTU slave
 
     MBRTUD_ENABLED=false
 
